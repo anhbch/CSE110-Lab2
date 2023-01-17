@@ -18,7 +18,7 @@ public class MainActivity extends AppCompatActivity {
     // The operation last entered. Optional is a safer alternative to null.
     private Optional<String> pendingOp = Optional.empty();
     // The current string shown on the calculator display.
-    private String displayStr = "0";
+    private String cleanerStr = "0";
 
     private TextView display;
     private Button[] numBtns = new Button[10];
@@ -78,12 +78,12 @@ public class MainActivity extends AppCompatActivity {
 
         // Retrieve the text from the button, and append it to the display.
         var num = btn.getText();
-        if (displayStr.equals("0")) {
+        if (cleanerStr.equals("0")) {
             // If the display is just 0, set it to the digit entered.
-            displayStr = num.toString();
+            cleanerStr = num.toString();
         } else {
             // Otherwise, append the next digit.
-            displayStr += num;
+            cleanerStr += num;
         }
         updateDisplay();
     }
@@ -93,8 +93,8 @@ public class MainActivity extends AppCompatActivity {
         Button btn = (Button) view;
 
         // If we already have a decimal, don't do anything.
-        if (displayStr.contains(".")) return;
-        displayStr += ".";
+        if (cleanerStr.contains(".")) return;
+        cleanerStr += ".";
         updateDisplay();
     }
 
@@ -103,7 +103,7 @@ public class MainActivity extends AppCompatActivity {
         Button btn = (Button) view;
 
         // Parse the current number and save it to "previous value".
-        storedValue = new BigDecimal(displayStr);
+        storedValue = new BigDecimal(cleanerStr);
         clearDisplay();
 
         // Set the pending operation.
@@ -116,7 +116,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void onEqualsButtonClicked(View view) {
         // Parse the current value.
-        var currValue = new BigDecimal(displayStr);
+        var currValue = new BigDecimal(cleanerStr);
 
         // Compute the result.
         // The map method calls the given lambda with the value inside
@@ -135,34 +135,18 @@ public class MainActivity extends AppCompatActivity {
 
         // Clear the pending operation and update the display.
         pendingOp = Optional.empty();
-        displayStr = String.valueOf(result);
-        trimDisplayStr();
+        cleanerStr = String.valueOf(result);
+        Utilities.trimDisplayStr(this.cleanerStr);
         updateDisplay();
     }
 
     private void updateDisplay() {
-        display.setText(displayStr);
+        display.setText(cleanerStr);
     }
 
     private void clearDisplay() {
-        displayStr = "0";
+        cleanerStr = "0";
         updateDisplay();
     }
 
-    private void trimDisplayStr() {
-        // If the string does not contain a decimal point, don't do anything.
-        if (!displayStr.contains(".")) {
-            return;
-        }
-        // Trim off any extra "0s" at the end.
-        var cleanedStr = displayStr;
-        while (cleanedStr.endsWith("0")) {
-            cleanedStr = cleanedStr.substring(0, cleanedStr.length() - 1);
-        }
-        // And now if it ends with a ".", trim that too.
-        if (cleanedStr.endsWith(".")) {
-            cleanedStr = cleanedStr.substring(0, cleanedStr.length() - 1);
-        }
-        displayStr = cleanedStr;
-    }
 }
