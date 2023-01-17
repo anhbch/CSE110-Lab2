@@ -10,7 +10,7 @@ jobs:
       - name: set up JDK 11
         uses: actions/setup-java@v3
         with:
-          distribution: 'zulu'ssh -T git@github.com
+          distribution: 'zulu'
           java-version: '11'
 
       # Execute unit tests

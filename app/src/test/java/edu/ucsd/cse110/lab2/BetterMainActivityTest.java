@@ -34,8 +34,6 @@ public class BetterMainActivityTest {
 
             TextView result = activity.findViewById(R.id.display);
             assertEquals(result.getText().toString(), "2");
-
-
         });
     }
 }
